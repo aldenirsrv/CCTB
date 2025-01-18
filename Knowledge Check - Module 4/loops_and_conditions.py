@@ -24,8 +24,6 @@ elif given_age >=15 and given_age <= 14:
 else:
     print("Are you a student?")
 
-
-
 # Practise Exercises on Loops
 # Write a for loop the prints out all the element between -5 and 5 using the range function.
 for n in range(-5,5):
@@ -71,9 +69,7 @@ print("\nTable of 7")
 for i in range(11):
     print(f"7 x {i} = {7*i}")
 
-
 # The following is a list of animals in a National Zoo. Animals = ["lion", "giraffe", "gorilla", "parrots", "crocodile","deer", "swan"]
-
 # Your brother needs to write an essay on the animals whose names are made of 7 letters. Help him find those animals through a while loop and create a separate list of such animals.
 animals = ["lion", "giraffe", "gorilla", "parrots", "crocodile","deer", "swan"]
 made_of_seven = []
