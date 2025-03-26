@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financial-python-server
+  namespace: financial
+  labels:
+    app: financial-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: financial-python-server
+  template:
+    metadata:
+      labels:
+        app: financial-python-server
+    spec:
+      containers:
+        - name: financial-python-server
+          image: "aldenir/financial-python-server:v1.0.2"
+          ports:
+            - containerPort: 5000  # Port on which your application is running inside the container
+          # resources:
+          #   requests:
+          #     cpu: "0.25"
+          #     memory: 20Mi
+          #   limits:
+          #     cpu: "0.5"
+          #     memory: 128Mi
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            periodSeconds: 3
+            failureThreshold: 30
+            initialDelaySeconds: 10  # Add delay for startup
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            periodSeconds: 3
+            failureThreshold: 1
+            initialDelaySeconds: 10  # Add delay for readiness
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 1
+            successThreshold: 1
+            initialDelaySeconds: 15  # Add delay for liveness

@@ -1,0 +1,148 @@
+import React, { useEffect, useState } from 'react';
+import Plot from 'react-plotly.js';
+import io from 'socket.io-client';
+
+// Conectar ao servidor Flask via WebSocket (usando Socket.IO)
+const socket = io('http://localhost:5000', {
+  transports: ['websocket'],  // Garantir que WebSocket será usado
+});
+
+function App() {
+  const [timeData, setTimeData] = useState([]);
+  const [priceData, setPriceData] = useState([]);
+  const [candlestickData, setCandlestickData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+
+  useEffect(() => {
+    socket.on('bitcoin_data', (data) => {
+      const { timestamp, price } = data;
+
+      // Atualiza o gráfico de linha e barra
+      setTimeData((prevTimeData) => [...prevTimeData, timestamp]);
+      setPriceData((prevPriceData) => [...prevPriceData, price]);
+
+      // Atualiza o gráfico de candlestick
+      setCandlestickData((prevData) => {
+        const lastData = prevData[prevData.length - 1] || [timestamp, price, price, price, price];
+        lastData[1] = price;  // Open
+        lastData[2] = price;  // High
+        lastData[3] = price;  // Low
+        lastData[4] = price;  // Close
+        return [...prevData, lastData];
+      });
+
+      // Simula a atualização de dados para gráfico de pizza
+      setPieData([['Bitcoin', price], ['Outros', 100000 - price]]);
+
+      // Limita os dados para os últimos 60 segundos
+      if (timeData.length > 60) {
+        setTimeData((prev) => prev.slice(1));
+        setPriceData((prev) => prev.slice(1));
+        setCandlestickData((prev) => prev.slice(1));
+      }
+    });
+
+    return () => {
+      socket.off('bitcoin_data');
+    };
+  }, [timeData]);
+
+  return (
+    <div>
+      <h1>Gráficos de Bitcoin em Tempo Real</h1>
+
+      {/* Gráfico de Linha */}
+      <Plot
+        data={[
+          {
+            x: timeData.map((timestamp) => new Date(timestamp * 1000).toLocaleTimeString()),
+            y: priceData,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: { color: 'blue' },
+          },
+        ]}
+        layout={{
+          title: 'Preço do Bitcoin (Linha)',
+          xaxis: { title: 'Tempo' },
+          yaxis: { title: 'Preço (USD)' },
+          showlegend: false,
+          transition: {
+            duration: 500,  // Duração da animação
+            easing: 'cubic-in-out',
+          },
+        }}
+      />
+
+      {/* Gráfico de Candlestick */}
+      <Plot
+        data={[
+          {
+            x: timeData.map((timestamp) => new Date(timestamp * 1000).toLocaleTimeString()),
+            close: candlestickData.map((data) => data[4]), // Close
+            high: candlestickData.map((data) => data[2]), // High
+            low: candlestickData.map((data) => data[3]), // Low
+            open: candlestickData.map((data) => data[1]), // Open
+            type: 'candlestick',
+            name: 'Candlestick',
+          },
+        ]}
+        layout={{
+          title: 'Gráfico de Candlestick',
+          xaxis: { title: 'Tempo' },
+          yaxis: { title: 'Preço (USD)' },
+          showlegend: false,
+          transition: {
+            duration: 500,  // Duração da animação
+            easing: 'cubic-in-out',
+          },
+        }}
+      />
+
+      {/* Gráfico de Barras */}
+      <Plot
+        data={[
+          {
+            x: timeData.map((timestamp) => new Date(timestamp * 1000).toLocaleTimeString()),
+            y: priceData,
+            type: 'bar',
+            marker: { color: 'green' },
+          },
+        ]}
+        layout={{
+          title: 'Preço do Bitcoin (Barra)',
+          xaxis: { title: 'Tempo', tickangle: 45 },
+          yaxis: { title: 'Preço (USD)' },
+          showlegend: false,
+          barmode: 'group',
+          transition: {
+            duration: 500,  // Duração da animação
+            easing: 'cubic-in-out',
+          },
+        }}
+      />
+
+      {/* Gráfico de Pizza */}
+      <Plot
+        data={[
+          {
+            values: pieData.map((item) => item[1]),
+            labels: pieData.map((item) => item[0]),
+            type: 'pie',
+            hole: 0.4,
+          },
+        ]}
+        layout={{
+          title: 'Distribuição do Preço do Bitcoin',
+          showlegend: true,
+          transition: {
+            duration: 500,  // Duração da animação
+            easing: 'cubic-in-out',
+          },
+        }}
+      />
+    </div>
+  );
+}
+
+export default App;

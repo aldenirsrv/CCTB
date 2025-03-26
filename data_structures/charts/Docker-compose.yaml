@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  react-app:
+    image: aldenir/financial-react-app:v1.0.6
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+  golang-app:
+    image: aldenir/financial-go-server:v1.0.6
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+  python-app:
+    image: aldenir/financial-python-server:v1.0.6
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

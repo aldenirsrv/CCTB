@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export KEY_BINANCE="ktN7syeiTWtyQLyg6bDJMbdW5C2QEninbnDT2OMVkqXjDuq8BRJrwnnIVT7GrdRu"
+export SECRET_BINANCE="0Vv8xaouYKORc09U4pVkl0O5iNXYK4ktAyxBB3XzVjwfC8xT1Xo4P3t8DYiOQCx4"

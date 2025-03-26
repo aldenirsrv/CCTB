@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financial-go-server
+  namespace: financial
+  labels:
+    app: financial-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: financial-go-server
+  template:
+    metadata:
+      labels:
+        app: financial-go-server
+    spec:
+      containers:
+        - name: financial-go-server
+          image: "aldenir/financial-go-server:v1.0.3"
+          ports:
+            - containerPort: 8000
+          # resources:
+          #   requests:
+          #     cpu: "0.1"
+          #     memory: 20Mi
+          #   limits:
+          #     cpu: "0.1"
+          #     memory: 25Mi
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3
+            failureThreshold: 30
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3
+            failureThreshold: 1
+            # initialDelaySeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 1
+            successThreshold: 1

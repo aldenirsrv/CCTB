@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: financial-react-app
+  namespace: financial
+  labels:
+    app: financial-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: financial-react-app
+  template:
+    metadata:
+      labels:
+        app: financial-react-app
+    spec:
+      containers:
+        - name: financial-react-app
+          image: "aldenir/financial-react-app:v1.0.1"
+          ports:
+            - containerPort: 80
+

@@ -1,0 +1,58 @@
+.toggle-button {
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 15px; 
+    height: 34px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    left: 8px;
+  }
+  
+  .toggle-button.dark {
+    background-color: #000;
+  }
+  
+  .toggle-button.light {
+    background-color: #faf9f9;
+  }
+  
+  /* Animação do slider */
+  .slider {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    top: 0px;
+    padding: 1px;
+  }
+  
+  .slider.light {
+    transform: translateY(0);
+    background-color: #000;
+  }
+  
+  .slider.dark {
+    transform: translateY(20px);
+    background: #fcd535;
+  }
+  
+  .switch-icon {
+    width: 14px;
+    height: 14px;
+    color: currentColor;
+    transition: opacity 0.3s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }

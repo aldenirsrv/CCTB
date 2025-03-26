@@ -1,0 +1,26 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: financial-ingressroute
+  namespace: financial
+  labels:
+    app: financial-app
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`go-app.local`)
+      kind: Rule
+      services:
+        - name: financial-go-service
+          port: 8000
+    - match: Host(`python-app.local`)
+      kind: Rule
+      services:
+        - name: financial-python-service
+          port: 5000
+    - match: Host(`react-app.local`)
+      kind: Rule
+      services:
+        - name: financial-react-service
+          port: 8080
